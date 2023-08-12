@@ -1,14 +1,13 @@
 import requests
 from tabulate import tabulate
 
-
-
 data = [
-    '\x02D', '001001', '0091', '19334937', 'E0', '017', '10.41', '019', '0.81', '020', '7.49', '021', '4.4', '022', '75.6', '023', '26', '024', '34', '025', '18',
+    '\x02D', '001001', '0091', '19334937', 'E0', '017', '10.41', '019', '0.81', '020', '7.49', '021', '4.4', '022',
+    '75.6', '023', '26', '024', '34', '025', '18',
     '\x02D', '000501', '0092', '19577610', 'E0', '007', '56.0',
     '\x02D', '000601', '0093', '19577591', 'E0', '029', '107.0',
     '\x02D', '000701', '0094', '19314614', 'E0', '010', '16.7', '020', '4.07',
-'\x02D', '000701', '0094', '1931222', 'E0', '010', '16.7'
+    '\x02D', '000701', '0094', '1931222', 'E0', '010', '16.7'
 ]
 
 grouped_data = []
@@ -29,31 +28,21 @@ result_dict = {}
 
 for group in grouped_data:
     index_of_e0 = group.index('E0')
-    key = group[index_of_e0-1]
+    key = group[index_of_e0 - 1]
     even_values = [group[i] for i in range(index_of_e0 + 1, len(group), 2)]
     odd_values = [group[i] for i in range(index_of_e0 + 2, len(group), 2)]
-    result_dict[key] = { 'even_values': even_values, 'odd_values': odd_values}
+    result_dict[key] = {'even_values': even_values, 'odd_values': odd_values}
 
 for key, values in result_dict.items():
     table_data = []
     for even_value, odd_value in zip(values['even_values'], values['odd_values']):
-        table_data.append([key, even_value, odd_value])  # Add 'key' to the beginning of each row
+        table_data.append([key, even_value, odd_value, "AU700", "hyd"])  # Add constant values
 
-    headers = ['group id', 'ids', 'values']
+    headers = ['barcode', 'test_id', 'value', 'machine', 'branch']
     table = tabulate(table_data, headers, tablefmt='grid')
 
     print(f"Table for Group {key}:")
     print(table)
-
-
-    # Prepare the data to be sent in the POST request
-    post_data = {
-        'group_id': key,
-        'table': table
-    }
-
-
-
 
 api_url = "http://183.82.112.126/razor_update.asmx/Send"
 
