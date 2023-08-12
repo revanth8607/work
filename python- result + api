@@ -44,25 +44,25 @@ for key, values in result_dict.items():
     print(f"Table for Group {key}:")
     print(table)
 
-api_url = "http://192.168.0.2:85/api/Send"
+api_url = "https://any-api.com/Ipstack"
 headers = {
     'Authorization' : 'Basic'
 }
+
 for key, values in result_dict.items():
-    for value in values:
-    payload = {
+    for even_value, odd_value in zip(values['even_values'], values['odd_values']):
+        payload = {
+            'barcode': key,
+            'test_id': even_value,
+            'value': odd_value,
+            'machine': 'au',
+            'branch': 'hyd'
+        }
 
-        'barcode': key,
-        'test_id': values['even_values'],
-        'value': values['odd_values'],
-        'machine': 'au',
-        'branch': 'hyd'
-    }
-
-    response = requests.request("POST", api_url,headers=headers, data=payload)
-    print(payload)
-    print(response.text)
-    if (response.text == "Success"):
-        print(f"API call for group {key} successful")
-    else:
-        print(f"API call for group {key} failed with status code {response}")
+        response = requests.post(api_url, headers=headers, data=payload)
+        print(payload)
+        print(response.text)
+        if response.text == "Success":
+            print(f"API call for group {key} successful")
+        else:
+            print(f"API call for group {key} failed with status code {response}")
