@@ -1,0 +1,38 @@
+data = [
+    '\x02D', '001001', '0091', '19334937', 'E0', '017', '10.41', '019', '0.81', '020', '7.49', '021', '4.4', '022', '75.6', '023', '26', '024', '34', '025', '18',
+    '\x02D', '000501', '0092', '19577610', 'E0', '007', '56.0',
+    '\x02D', '000601', '0093', '19577591', 'E0', '029', '107.0',
+    '\x02D', '000701', '0094', '19314614', 'E0', '010', '16.7', '020', '4.07'
+]
+
+grouped_data = []
+current_group = []
+
+for item in data:
+    if item.startswith('\x02D'):
+        if current_group:
+            grouped_data.append(current_group)
+        current_group = [item]
+    else:
+        current_group.append(item)
+
+if current_group:
+    grouped_data.append(current_group)
+
+result_dict = {}
+
+for group in grouped_data:
+    index_of_e0 = group.index('E0')
+    key = group[index_of_e0-1]  # Assuming the value before 'E0' is unique and used as a key
+    even_values = [group[i] for i in range(index_of_e0 + 1, len(group), 2)]  # Even indices after 'E0'
+    odd_values = [group[i] for i in range(index_of_e0 + 2, len(group), 2)]   # Odd indices after 'E0'
+    result_dict[key] = { 'even_values': even_values, 'odd_values': odd_values}
+
+for key, values in result_dict.items():
+    output = f"Group: {key}\n"
+    output += f"ids: {values['even_values']}\n"
+    output += f"values: {values['odd_values']}\n"
+    print(output)
+    print()  # Adding an empty line between groups for clarity
+
+
