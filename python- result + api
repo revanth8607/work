@@ -44,18 +44,25 @@ for key, values in result_dict.items():
     print(f"Table for Group {key}:")
     print(table)
 
-api_url = "http://183.82.112.126/razor_update.asmx/Send"
-
+api_url = "http://192.168.0.2:85/api/Send"
+headers = {
+    'Authorization' : 'Basic'
+}
 for key, values in result_dict.items():
+    for value in values:
     payload = {
-        'result': key,
-        'machine': values['even_values'],
-        'branch': values['odd_values']
+
+        'barcode': key,
+        'test_id': values['even_values'],
+        'value': values['odd_values'],
+        'machine': 'au',
+        'branch': 'hyd'
     }
 
-    response = requests.get(api_url, json=payload)
-
-    if response.status_code == 200:
+    response = requests.request("POST", api_url,headers=headers, data=payload)
+    print(payload)
+    print(response.text)
+    if (response.text == "Success"):
         print(f"API call for group {key} successful")
     else:
-        print(f"API call for group {key} failed with status code {response.status_code}")
+        print(f"API call for group {key} failed with status code {response}")
