@@ -1,0 +1,9 @@
+import re
+
+data = "\x02DB\x03\x02D 000101 E006            19520607    E 022335.90r 019  5.51r 025 73.41r 028435.90r 028935.40r \x03\x02DE\x03"
+
+# Use regular expression to find substrings like "022335.90r"
+pattern = r'0\d{5}\.\d{2}r'
+modified_data = re.sub(pattern, lambda match: match.group()[:3] + " " + match.group()[3:], data)
+
+print(modified_data)
